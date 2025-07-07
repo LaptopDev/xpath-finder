@@ -1,16 +1,17 @@
 const browserAppData = this.browser || this.chrome;
 const shortcutCommand = "toggle-xpath";
-const updateAvailable = typeof browserAppData.commands.update !== "undefined" ? true : false;
-const isMac = navigator.platform.match(/(Mac|iPhone|iPod|iPad)/i) ? true : false;
+const updateAvailable = typeof browserAppData.commands.update !== "undefined";
+const isMac = navigator.platform.match(/(Mac|iPhone|iPod|iPad)/i);
 const shortCutKeys = isMac ? "Command+Shift+" : "Ctrl+Shift+";
 const shortCutLabels = isMac ? "CMD+SHIFT+" : "CTRL+SHIFT+";
 
 async function updateShortcut() {
-  updateAvailable &&
-    (await browserAppData.commands.update({
+  if (updateAvailable) {
+    await browserAppData.commands.update({
       name: shortcutCommand,
       shortcut: shortCutKeys + document.querySelector("#shortcut").value
-    }));
+    });
+  }
 }
 
 async function resetShortcut() {
@@ -37,12 +38,14 @@ function saveOptions(e) {
       clipboard: document.querySelector("#copy").checked,
       shortid: document.querySelector("#shortid").checked,
       position: document.querySelector("#position").value,
-      shortcut: document.querySelector("#shortcut").value
+      shortcut: document.querySelector("#shortcut").value,
+      color: document.querySelector("#highlightColor").value,
+      style: document.querySelector("#highlightStyle").value
     },
     () => {
       const status = document.querySelector(".status");
       status.textContent = "Options saved.";
-      updateAvailable && updateShortcut();
+      if (updateAvailable) updateShortcut();
       setTimeout(() => {
         status.textContent = "";
       }, 1000);
@@ -58,7 +61,9 @@ function restoreOptions() {
       clipboard: true,
       shortid: true,
       position: "bl",
-      shortcut: "U"
+      shortcut: "U",
+      color: "#0000ff",
+      style: "solid"
     },
     items => {
       document.querySelector("#inspector").checked = items.inspector;
@@ -66,19 +71,18 @@ function restoreOptions() {
       document.querySelector("#shortid").checked = items.shortid;
       document.querySelector("#position").value = items.position;
       document.querySelector("#shortcut").value = items.shortcut;
+      document.querySelector("#highlightColor").value = items.color;
+      document.querySelector("#highlightStyle").value = items.style;
     }
   );
 }
 
-// update shortcut string in options box
 document.querySelector(".command").textContent = shortCutLabels;
 
-// check if browser support updating shortcuts
 if (updateAvailable) {
   document.querySelector("#reset").addEventListener("click", resetShortcut);
   document.querySelector("#shortcut").addEventListener("keyup", shortcutKeyField);
 } else {
-  // remove button and disable input field
   document.querySelector("#reset").remove();
   document.querySelector("#shortcut").setAttribute("disabled", "true");
 }
