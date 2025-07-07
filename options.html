@@ -37,6 +37,19 @@
           </select>
         </div>
         <div class="options-elem">
+          <label for="highlightColor">Highlight color:</label>
+          <input type="color" id="highlightColor" name="highlightColor" value="#0000ff">
+        </div>
+        <div class="options-elem">
+          <label for="highlightStyle">Highlight border style:</label>
+          <select id="highlightStyle" name="highlightStyle">
+            <option value="solid" selected>Solid</option>
+            <option value="dotted">Dotted</option>
+            <option value="dashed">Dashed</option>
+            <option value="double">Double</option>
+          </select>
+        </div>
+        <div class="options-elem">
           <label for="shortcut">Keyboard shortcut:</label>
           <span class="command">CTRL+SHIFT+</span>
           <input type="text" required maxlength="1" id="shortcut" pattern="[A-Z]">
